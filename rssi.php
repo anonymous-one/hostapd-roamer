@@ -74,7 +74,10 @@ function fetchRssi($params,$timeout=5){ // send out a beacon request, and wait f
                 clearstatcache();
                 if(is_file($beaconfile)){ // we have a response
                         $content=file_get_contents($beaconfile);
-                        if(strlen($content)<64){ // 64 is just a random length, but these beacon responses are quite long, so 64 is enough
+                        if($content=='FAILED'){
+                                return NULL;
+                        }
+                        elseif(strlen($content)<64){ // 64 is just a random length, but these beacon responses are quite long, so 64 is enough
                                 return false;
                         }
                         $rssi=unpack("l", pack("l", hexdec("FFFFFF".strtoupper(substr($content,26,2)))))[1]; // pull out the rssi from the beacon response
@@ -226,7 +229,11 @@ while(true){
                 $params['targetmac']=$rssidata['apmac'];
                 $params['targetnr']=$neigh[$rssidata['apmac']];
                 $result=fetchRssi($params,1);
-                if($result!==false){
+                if($result===NULL||$result===false){
+                        usleep(100000);
+                        continue;
+                }
+                else{
                         $rssidata['rssi']=$result;
                 }
                 if($rssidata['freq']==5&&$rssidata['rssi']>=$data['rssi-5-to-other']){ // see if we should roam from AP1 5ghz to AP2 5ghz
