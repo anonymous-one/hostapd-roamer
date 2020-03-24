@@ -87,7 +87,7 @@ The script has 3 parts:
 
 **Configuration - hostapd_cli + wifievent.sh**
 
-Place hostapd wherever you like, and add the following to your rc.local file:
+Place wifievent.sh wherever you like, and add the following to your rc.local file:
 
 ```
 (while true; do sleep 10 ; /usr/sbin/hostapd_cli -a /LOCATION/wifievent.sh -i ADAPTER 2>&1 >> /var/log/hostapd.log; done) &
