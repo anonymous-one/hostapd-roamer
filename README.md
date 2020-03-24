@@ -59,7 +59,7 @@ The script has 3 triggers for when a roam is forced:
 
 So in my home, since I have a dual band AC on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlay where one AP gets weak and the next one gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
 
-**How it works - 802.11v*
+**How it works - 802.11v**
 
 Just a quick overview on how 802.11v (as I am using it) works. I am going to butcher the terminology here as wifi internals are not my specialty but heres how it works.
 
