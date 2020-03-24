@@ -81,7 +81,7 @@ The script has 3 parts:
 
 **a) wifievent.sh** = A script that is executed via hostapd_cli when a beacon request response comes back from the device so it can be saved and passed back to rssi.php.
 
-**b) rssi.config.php** = A basic confirmation file with various settings
+**b) rssi.config.php** = A basic configuration file with various settings
 
 **c) rssi.php** = The infinite loop script that does 2 things: a) Forces the device to roam b) Sends out and waits for a response for beacon requests from client devices.
 
