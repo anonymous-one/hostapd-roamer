@@ -51,9 +51,11 @@ Not 100% necessary but I have noticed this works quite a bit better with Qualcom
 
 The script has 3 triggers for when a roam is forced:
 
-a) Client connected at 2.4ghz, signal strength high = Try to roam to the same accesspoint, but 5ghz
-b) Client connected at 5ghz, signal strength medium / low = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
-c) Client connected at 2.4ghz, signal strength low = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
+**a) Client connected at 2.4ghz, signal strength high** = Try to roam to the same accesspoint, but 5ghz
+
+**b) Client connected at 5ghz, signal strength medium / low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
+
+**c) Client connected at 2.4ghz, signal strength low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
 
 So in my home, since I have a dual band AC on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlay where one AP gets weak and the next one gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
 
@@ -71,6 +73,8 @@ That's all there is to it.
 
 The script has 3 parts:
 
-a) wifievent.sh = A script that is executed via hostapd_cli when a beacon request response comes back from the device so it can be saved and passed back to rssi.php.
-b) rssi.config.php = A basic confirmation file with various settings
-c) rssi.php = The infinite loop script that does 2 things: a) Forces the device to roam b) Sends out and waits for a response for beacon requests from client devices.
+**a) wifievent.sh** = A script that is executed via hostapd_cli when a beacon request response comes back from the device so it can be saved and passed back to rssi.php.
+
+**b) rssi.config.php** = A basic confirmation file with various settings
+
+**c) rssi.php** = The infinite loop script that does 2 things: a) Forces the device to roam b) Sends out and waits for a response for beacon requests from client devices.
