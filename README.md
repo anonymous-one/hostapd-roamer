@@ -78,3 +78,28 @@ The script has 3 parts:
 **b) rssi.config.php** = A basic confirmation file with various settings
 
 **c) rssi.php** = The infinite loop script that does 2 things: a) Forces the device to roam b) Sends out and waits for a response for beacon requests from client devices.
+
+**Configuration - hostapd_cli + wifievent.sh**
+
+Place hostapd wherever you like, and add the following to your rc.local file:
+
+```
+(while true; do sleep 10 ; /usr/sbin/hostapd_cli -a /LOCATION/wifievent.sh -i ADAPTER 2>&1 >> /var/log/hostapd.log; done) &
+```
+
+Location = Where wifievent.sh is located.
+Adapter = The adapter to listen to events on. So if you have 2 adapters (most commonly wlan0 / wlan1) you will need two of the above. Here is exactly what is in my rc.local files on both my Debian and OpenWRT access points:
+
+```
+(while true; do sleep 10 ; /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan0 2>&1 >> /var/log/hostapd.log; done) &
+(while true; do sleep 10 ; /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan1 2>&1 >> /var/log/hostapd.log; done) &
+```
+
+Once you have placed the script wherever you so desire and added the following to your rc.local, reboot your device wait a few seconds and check that its running. Doing a ps | grep hostapd_cli (in OpenWRT) or ps aux | grep hostapd_cli (in Debian / normal linux) should give you somthing like:
+
+```
+root      1987  0.0  0.0   8480  1652 ?        S    Mar19   0:07 /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan0
+root      1988  0.0  0.0   8480  1636 ?        S    Mar19   2:32 /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan1
+```
+
+This means that hostapd_cli is up and running, listening for events on wlan0 and wlan1, and will execute /etc/scripts/wifievent.sh when an event has taken place.
