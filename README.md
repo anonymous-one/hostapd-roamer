@@ -63,15 +63,15 @@ The script has 3 triggers for when a roam is forced:
 
 **c) Client connected at 2.4ghz, signal strength low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
 
-So in my home, since I have a dual band access point on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlay where one AP gets weak and the next one gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
+So in my home, since I have a dual band access point on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlap where one access point's signal gets weak and the next one's gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
 
 **How it works - 802.11v**
 
-Just a quick overview on how 802.11v (as I am using it) works. I am going to butcher the terminology here as wifi internals are not my specialty but heres how it works.
+Just a quick overview on how 802.11v (as I am using it) works. I am going to butcher the terminology here as wifi internals are not my specialty but here is how I understand it to work.
 
-We use beacon requests to ask the client device to send a beacon to an AP. Any AP that supports it (from the provided list). This info is then sent back by the client to the currently connected to AP. Amongst the various information sent back is the RSSI of how strong the request was. This is how we check where we can possible roam to.
+The script uses beacon requests to ask the client device to report the beacons it is picking up. So you tell the client "hey, listen for a beacon from XX:XX:XX:XX:XX:XX and send me back what you hear". This info is then sent back by the client to the currently connected to access point. Among the various information that is sent back is the RSSI of how strong the beacon was. This is how we check where we can possible roam to.
 
-We then use BSS-TM to force the client to switch access points.
+We then use BSS-TM to force the client to switch access points. BSS-TM is essentially a request sent to the client device saying "hey, I would like you to roam to this access point". The script lets the client know that this is a prefered access point as well as that its bridged to the same network. These 2 additional details (according to Samsungs Roaming FAQ) are kind of +1's on the roaming decision. The client can still decide not to roam, but in my case with my S7 Edge, it never says no. Even if I try to roam to an access point that has a very weak signal (80 for example), it will still connect. Only to roam back to the strongest one on its own XX seconds later.
 
 That's all there is to it.
 
