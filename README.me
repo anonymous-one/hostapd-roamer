@@ -1,4 +1,4 @@
-Hostapd-roamer
+**Hostapd-roamer**
 
 This is a simple PHP based script that will streer a client device to multiple access points using hostapd / OpenWRT's ubus hostapd interface.
 
@@ -6,11 +6,11 @@ It's not super polished, but works quite well for me. Don't expect to have it ru
 
 It is a bit tailored to my home, which has a dual band access point on each floor. This means that I have a strong 5ghz signal everywhere. So it is setup to try and get the client on to a 5ghz access point as quickly as possible. More details how this is done below.
 
-Requirements
+**Requirements**
 
 There are quite a few:
 
-A) OpenWRT
+**A) OpenWRT**
 
 OpenWRT 19 or higher. This script makes use of a few of the fairly recently added ubus calls which I believe were added somewhere between 18 or 19.
 
@@ -30,4 +30,6 @@ option ft_over_ds '1'
 option ieee80211k '1'
 option ieee80211v '1'
 option bss_transition '1'
+
+This is by far not a guide on how to setup 802.11r/k/v on OpenWRT, but there is plenty of info out there on how to get it configured.
 
