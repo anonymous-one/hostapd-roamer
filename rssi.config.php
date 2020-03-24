@@ -1,5 +1,9 @@
 <?php
 
+/*
+general note : all mac addresses must be in lower case (eg: aa:bb:cc not AA:BB:CC...)
+*/
+
 $data=array();
 
 /*
