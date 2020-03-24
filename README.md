@@ -59,7 +59,7 @@ Ideally your client device will have a static IP assigned to it. The reason for 
 
 The script has 3 triggers for when a roam is forced:
 
-**a) Client connected at 2.4ghz, signal strength high** = Try to roam to the same accesspoint, but 5ghz
+**a) Client connected at 2.4ghz, signal strength high** = Try to roam to the same access point, but 5ghz
 
 **b) Client connected at 5ghz, signal strength medium / low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
 
