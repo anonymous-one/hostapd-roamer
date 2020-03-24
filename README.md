@@ -49,7 +49,7 @@ Although not required, I highly recommend every access point uses the same authe
 
 Not 100% necessary but I have noticed this works quite a bit better with Qualcomm based adapters. Mediatek adapters don't quite bridge the wireless interface correctly and broadcast packets are lost on inital connection. That was at least the case for me. I am running ath9k / ath10k adapters on all floors after replacing the MediaTek based RE650 on my middle floor.
 
-***D) Client Device**
+**D) Client Device**
 
 You will need a client device that supports 802.11v. I am currently using a Samsung S7 Edge (old by todays standards) running Android 8.0 and it supports it. You can be fairly certain anything made post 2017 _should_ support 802.11v.
 
