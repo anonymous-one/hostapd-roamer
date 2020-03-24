@@ -1,0 +1,33 @@
+Hostapd-roamer
+
+This is a simple PHP based script that will streer a client device to multiple access points using hostapd / OpenWRT's ubus hostapd interface.
+
+It's not super polished, but works quite well for me. Don't expect to have it running perfectly without making some changes. I am posting this strictly because I think someone out there will find it useful.
+
+It is a bit tailored to my home, which has a dual band access point on each floor. This means that I have a strong 5ghz signal everywhere. So it is setup to try and get the client on to a 5ghz access point as quickly as possible. More details how this is done below.
+
+Requirements
+
+There are quite a few:
+
+A) OpenWRT
+
+OpenWRT 19 or higher. This script makes use of a few of the fairly recently added ubus calls which I believe were added somewhere between 18 or 19.
+
+Packages hostapd-utils coreutils-timeout php7-cli.
+
+You need to have 802.11r, 802.11k and 802.11v configured and running in the /etc/config/wireless configuration file.
+
+Here is a quick dump of the various settings that are applicable, some (in perticular nassid and r1_key_holder) will need to be changed in your individual case:
+
+option mobility_domain 'e612'
+option ieee80211r '1'
+option ft_psk_generate_local '1'
+option pmk_r1_push '1'
+option nasid 'CHANGE ME'
+option r1_key_holder 'CHANGE ME'
+option ft_over_ds '1'
+option ieee80211k '1'
+option ieee80211v '1'
+option bss_transition '1'
+
