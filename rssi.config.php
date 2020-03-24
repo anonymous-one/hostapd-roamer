@@ -38,10 +38,10 @@ $data['rssi-5-to-other-min']=65;
 the roamers (clients). these are devices you want to control the roaming of.
 
 format is:
-$roamers['Mac address of client device']=array('doping'=>true,'ip'=>'IP address of the device');
+$roamers['Mac address of client device']=array();
 */
 $roamers=array();
-$roamers['c1:c1:c1:c1:c1']=array('doping'=>true,'ip'=>'123.123.123.123');
+$roamers['c1:c1:c1:c1:c1:c1']=array();
 
 /*
 the neighbor list table.
