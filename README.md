@@ -49,23 +49,25 @@ Although not required, I highly recommend every access point uses the same authe
 
 Not 100% necessary but I have noticed this works quite a bit better with Qualcomm based adapters. Mediatek adapters don't quite bridge the wireless interface correctly and broadcast packets are lost on inital connection. That was at least the case for me. I am running ath9k / ath10k adapters on all floors after replacing the MediaTek based RE650 on my middle floor.
 
+Not 100% necessary but change your beacon interval to somthing a little bit higher. I use 50ms instead of the default 100ms. I am unsure if this helps or not, but the logic is that since the beacon scans are fairly quick, we should have a higher chance of picking up a beacon when more of them are sent out.
+
 **D) Client Device**
 
 You will need a client device that supports 802.11v. I am currently using a Samsung S7 Edge (old by todays standards) running Android 8.0 and it supports it. You can be fairly certain anything made post 2017 _should_ support 802.11v.
 
-Ideally your client device will have a static IP assigned to it. The reason for this is because once the RSSI as reported by ```iw``` gets stale (over a second), the script will send an ICMP echo (ping) to the client device. This forces the client to send out a packet and the RSSI in iw gets updated. A quick note on this, no this will not keep sending pings even when the screen is off. What tends to happen on my S7 Edge is after XX seconds (30-60) the device will not answer to pings if the screen is off. The script is set up in a way that once one ping is sent out, unless the inactivity time of the device drops back below 1 second (so some activity has taken place), it will not send another one. This is how I keep the ```iw``` RSSI fresh.
+Ideally your client device will have a static IP assigned to it. The reason for this is because once the RSSI as reported by ```iw``` gets stale (over a second), the script will send a icmp ping to the client device. This forces the client to send out a few packets and the RSSI in iw gets updated. A quick note on this, no this will not keep sending pings even when the screen is off. What tends to happen on my S7 Edge is after XX seconds (30-60) the device will not answer pings if the screen is off. The script is set up in a way that once one ping is sent out, unless the inactivity time of the device drops back below 1 second (so some activity has taken place), it will not send another one. This is how I keep the ```iw``` RSSI fresh.
 
 **How it works - Basic Idea**
 
 The script has 3 triggers for when a roam is forced:
 
-**a) Client connected at 2.4ghz, signal strength high** = Try to roam to the same access point, but 5ghz
+**a) Client connected at 2.4ghz, signal strength high** = Try to roam to the same access point, but at 5ghz.
 
-**b) Client connected at 5ghz, signal strength medium / low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
+**b) Client connected at 5ghz, signal strength medium / low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band).
 
-**c) Client connected at 2.4ghz, signal strength low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
+**c) Client connected at 2.4ghz, signal strength low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band).
 
-So in my home, since I have a dual band access point on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlap where one access point's signal gets weak and the next one's gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
+So in my home, since I have a dual band access point on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for _b_ or _c_ to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlap where one access point's signal gets weak and the next one's gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
 
 **How it works - 802.11v**
 
