@@ -42,7 +42,7 @@ function getDeviceRSSI($mac){ // fetch station details using iw, check all adapt
                 return $final;
         }
 }
-function fetchRssi($params){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
+function fetchRssi($params,$timeout=5){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
         global $data;
         $target=neighborFromMac($params['targetmac'],false);
         $parts=array();
@@ -70,7 +70,7 @@ function fetchRssi($params){ // send out a beacon request, and wait for hostapd_
         $command='hostapd_cli -i '.$params['staadapter'].' req_beacon '.$params['stamac'].' '.$packet.' 2>&1 > /dev/null';
         system($command);
         $start=time();
-        while(time()-$start<=5){ // wait for 5 seconds for a response, give up otherwise
+        while(time()-$start<=$timeout){ // wait for $timeout seconds for a response, give up otherwise
                 clearstatcache();
                 if(is_file($beaconfile)){ // we have a response
                         $content=file_get_contents($beaconfile);
@@ -219,24 +219,13 @@ while(true){
                         usleep(50000);
                         continue;
                 }
-                elseif($rssidata['inactivetime']>1000&&$devicedata['doping']){ // this block will force update the rssi on clients that have their screen on but idle wifi. an idle client with an awake wifi adapter could have a high inactive time but still respond to inbound packets.
-                        $command='timeout 1 ping -c1 -w1 '.$devicedata['ip'].' 2>&1 >/dev/null &';
-                        system($command);
-                        $roamers[$mac]['doping']=false;
-                        continue;
-                }
-                elseif($rssidata['inactivetime']>3000){ // if the rssi is stale? skip this round
-                        usleep(50000);
-                        continue;
-                }
-                $roamers[$mac]['doping']=true;
                 // fetch own rssi so its nice and fresh
                 $params=array();
                 $params['stamac']=$mac;
                 $params['staadapter']=$rssidata['apdevice'];
                 $params['targetmac']=$rssidata['apmac'];
                 $params['targetnr']=$neigh[$rssidata['apmac']];
-                $result=fetchRssi($params);
+                $result=fetchRssi($params,1);
                 if($result!==false){
                         $rssidata['rssi']=$result;
                 }
@@ -374,7 +363,7 @@ while(true){
                         }
                 }
         }
-        usleep(50000);
+        usleep(500000);
 }
 
 ?>
