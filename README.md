@@ -101,7 +101,7 @@ Adapter = The adapter to listen to events on. So if you have 2 adapters (most co
 (while true; do sleep 10 ; /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan1 2>&1 >> /var/log/hostapd.log; done) &
 ```
 
-Once you have placed the script wherever you so desire and added the following to your rc.local, reboot your device wait a few seconds and check that its running. Doing a ps | grep hostapd_cli (in OpenWRT) or ps aux | grep hostapd_cli (in Debian / normal linux) should give you somthing like:
+Once you have placed the script wherever you so desire and added the above to your rc.local, reboot your device wait a few seconds and check that hostapd_cli has launched. Doing a ```ps | grep hostapd_cli``` (in OpenWRT) or ```ps aux | grep hostapd_cli``` (in Debian / normal linux) should give you somthing like:
 
 ```
 root      1987  0.0  0.0   8480  1652 ?        S    Mar19   0:07 /usr/sbin/hostapd_cli -a /etc/scripts/wifievent.sh -i wlan0
@@ -112,7 +112,7 @@ This means that hostapd_cli is up and running, listening for events on wlan0 and
 
 **Configuration - rssi.config.php**
 
-Information on the various settings is found in the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php.
+Information about the various settings the script takes is found inside the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php.
 
 **Configuration - rssi.php**
 
