@@ -132,4 +132,6 @@ You should get some basic logged output to /var/log/hostapd.log.
 
 **Final notes**
 
-Like I said, this is a bit of a custom script tailored to my use case so YMMV.
+Remember, you are going to need to have **a copy of this running on each access point you want to roam from**. And of course the rssi.config.php file will need to be specific to that access point. In my case, 3 routers, each running a copy of this script. Currently its **setup to support a single roaming device (client)**. I put the foundation in place to support multiple clients, but in my home, its really only my cellphone I care about.
+
+And finally, this is a bit of a custom script tailored to my use case so YMMV. Enjoy!
