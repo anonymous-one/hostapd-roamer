@@ -104,6 +104,32 @@ root      1988  0.0  0.0   8480  1636 ?        S    Mar19   2:32 /usr/sbin/hosta
 
 This means that hostapd_cli is up and running, listening for events on wlan0 and wlan1, and will execute /etc/scripts/wifievent.sh when an event has taken place.
 
-**Configuration - hostapd.config.php**
+**Configuration - rssi.config.php**
 
 Information on the various settings is found in the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php.
+
+**Configuration - rssi.php**
+
+Once the 2 above are done, you are ready to start running the rssi.php script.
+
+Initally, you may want to just run it via your console using:
+
+```
+php-cli /LOCATION/rssi.php
+```
+
+This will give you a live view of the logging the script dumps.
+
+Once you decide you want to have this running at all times, add to rc.local via:
+
+```
+(while true; do sleep 60 ; /usr/bin/php-cli /etc/scripts/rssi.php >> /var/log/hostapd.log ; done) &
+```
+
+**Logging**
+
+You should get some basic logged output to /var/log/hostapd.log.
+
+**Final notes**
+
+Like I said, this is a bit of a custom script tailored to my use case so YMMV.
