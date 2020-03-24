@@ -1,6 +1,6 @@
 **Hostapd-roamer**
 
-This is a simple PHP based script that will streer a client device to multiple access points using hostapd / OpenWRT's ubus hostapd interface.
+This is a simple PHP based script that will forcefully roam a client device to multiple access points using plain hostapd or OpenWRT's ubus to hostapd interface.
 
 It's not super polished, but works quite well for me. Don't expect to have it running perfectly without making some changes. I am posting this strictly because I think someone out there will find it useful.
 
