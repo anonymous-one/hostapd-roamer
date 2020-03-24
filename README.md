@@ -55,8 +55,6 @@ Not 100% necessary but change your beacon interval to somthing a little bit high
 
 You will need a client device that supports 802.11v. I am currently using a Samsung S7 Edge (old by todays standards) running Android 8.0 and it supports it. You can be fairly certain anything made post 2017 _should_ support 802.11v.
 
-Ideally your client device will have a static IP assigned to it. The reason for this is because once the RSSI as reported by ```iw``` gets stale (over a second), the script will send a icmp ping to the client device. This forces the client to send out a few packets and the RSSI in iw gets updated. A quick note on this, no this will not keep sending pings even when the screen is off. What tends to happen on my S7 Edge is after XX seconds (30-60) the device will not answer pings if the screen is off. The script is set up in a way that once one ping is sent out, unless the inactivity time of the device drops back below 1 second (so some activity has taken place), it will not send another one. This is how I keep the ```iw``` RSSI fresh.
-
 **How it works - Basic Idea**
 
 The script has 3 triggers for when a roam is forced:
