@@ -45,7 +45,13 @@ You will again need to have 802.11r/k/v running on hostapd. I won't get into how
 
 Your access points must be using the same BSSID. And as mentioned above 802.11r/k/v must be enabled and running.
 
+Although not required, I highly recommend every access point uses the same authentication as well. And in the 5ghz band, the same channel. My setup looks like this: All APs the same BSSID + Authentication (WPA2), on the 5ghz band all APs the same channel and on the 2.4ghz band since I have 3 access points channels 1 6 and 11.
+
 Not 100% necessary but I have noticed this works quite a bit better with Qualcomm based adapters. Mediatek adapters don't quite bridge the wireless interface correctly and broadcast packets are lost on inital connection. That was at least the case for me. I am running ath9k / ath10k adapters on all floors after replacing the MediaTek based RE650 on my middle floor.
+
+***D) Client Device**
+
+You will need a client device that supports 802.11v. I am currently using a Samsung S7 Edge (old by todays standards) running Android 8.0 and it supports it. You can be fairly certain anything made post 2017 _should_ support 802.11v.
 
 **How it works - Basic Idea**
 
