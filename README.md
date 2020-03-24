@@ -20,6 +20,7 @@ You need to have 802.11r, 802.11k and 802.11v configured and running in the /etc
 
 Here is a quick dump of the various settings that are applicable, some (in perticular nassid and r1_key_holder) will need to be changed in your individual case:
 
+```
 option mobility_domain 'e612'
 option ieee80211r '1'
 option ft_psk_generate_local '1'
@@ -30,6 +31,7 @@ option ft_over_ds '1'
 option ieee80211k '1'
 option ieee80211v '1'
 option bss_transition '1'
+```
 
 This is by far not a guide on how to setup 802.11r/k/v on OpenWRT, but there is plenty of info out there on how to get it configured.
 
