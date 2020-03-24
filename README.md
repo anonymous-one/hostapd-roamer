@@ -112,7 +112,7 @@ This means that hostapd_cli is up and running, listening for events on wlan0 and
 
 **Configuration - rssi.config.php**
 
-Information about the various settings the script takes is found inside the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php.
+Information about the various settings the script takes is found inside the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php and also, **all mac addresses must be in lower case**.
 
 **Configuration - rssi.php**
 
