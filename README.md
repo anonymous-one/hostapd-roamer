@@ -103,3 +103,7 @@ root      1988  0.0  0.0   8480  1636 ?        S    Mar19   2:32 /usr/sbin/hosta
 ```
 
 This means that hostapd_cli is up and running, listening for events on wlan0 and wlan1, and will execute /etc/scripts/wifievent.sh when an event has taken place.
+
+**Configuration - hostapd.config.php**
+
+Information on the various settings is found in the file. I have commented it fairly quite a bit so everything you need is in there. Only note is that it must be in the same folder as rssi.php.
