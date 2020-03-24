@@ -35,7 +35,7 @@ $data['rssi-5-to-other']=68;
 $data['rssi-5-to-other-min']=65;
 
 /*
-the roamers. the devices you will actually be roaming to.
+the roamers (clients). these are devices you want to control the roaming of.
 
 format is:
 $roamers['Mac address of client device']=array('doping'=>true,'ip'=>'IP address of the device');
