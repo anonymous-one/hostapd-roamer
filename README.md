@@ -57,7 +57,7 @@ The script has 3 triggers for when a roam is forced:
 
 **c) Client connected at 2.4ghz, signal strength low** = Try to roam to another access point (you can specify 2.4ghz or 5ghz as it uses a neighbor report entry, so its agnostic to band)
 
-So in my home, since I have a dual band AC on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlay where one AP gets weak and the next one gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
+So in my home, since I have a dual band access point on each floor, as quickly as possible I try to force a roam to 5ghz on the same floor and then wait for 2 b or c to trigger if / when needed. This works well in my case as even at 5ghz, there is a bit of overlay where one AP gets weak and the next one gets strong. So most of the time I am able to roam between 5ghz bands without touching the 2.4ghz band.
 
 **How it works - 802.11v**
 
