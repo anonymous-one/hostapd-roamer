@@ -6,6 +6,8 @@ It's not super polished, but works quite well for me. Don't expect to have it ru
 
 It is a bit tailored to my home, which has a dual band access point on each floor. This means that I have a strong 5ghz signal everywhere. So it is setup to try and get the client on to a 5ghz access point as quickly as possible. More details how this is done below.
 
+**As of end of March 2020, I am actively updating this as there are still a few small issues here and there I am ironing out.** Once I feel its ready for production use, I will remove this note.
+
 **Requirements**
 
 There are quite a few:
