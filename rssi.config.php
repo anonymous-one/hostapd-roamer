@@ -5,7 +5,7 @@
 $data=array();
 $data['adapters']['2']=array('wlan0','aa:aa:aa:aa:aa:aa'); // your 2ghz adapter, remove if you do not have one
 $data['adapters']['5']=array('wlan1','bb:bb:bb:bb:bb:bb'); // your 5ghz adapter, remove if you do not have one
-$data['bssid']='My_SSID'; // your accesspoint ssid
+$data['bssid']='My_SSID'; // your accesspoint ssid (all access points must have the same ssid)
 $data['lastneighupdate']=0;
 $data['servertype']='hostapd'; // hostapd or openwrt
 $data['rssi-2-to-5']=60; // try to roam to own 5ghz at this 2ghz rssi
@@ -19,7 +19,7 @@ $roamers=array();
 $roamers['cc:cc:cc:cc:cc:cc']=array(); // mac address of your client
 
 $neigh=array();
-$neigh['dd:dd:dd:dd:dd:dd']='....'; // mac + neighbor report for everyone of your access points (2+5ghz, ALL of them)
+$neigh['dd:dd:dd:dd:dd:dd']='....'; // mac + neighbor report for everyone of your access points (2+5ghz, all of them. i repeat, all of them!)
 
 $beaconcheck=array(); // all the entries below MUST be listed in $neigh
 $beaconcheck[2][]='ee:ee:ee:ee:ee:ee'; // list of possible roam to candidates for rssi-2-to-other + rssi-2-to-other-min (can be 2 or 5ghz, must be in $neigh)
