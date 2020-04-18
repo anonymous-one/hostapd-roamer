@@ -49,7 +49,7 @@ Your access points must be using the same BSSID. And as mentioned above 802.11r/
 
 Although not required, I highly recommend every access point uses the same authentication as well. And in the 5ghz band, the same channel. My setup looks like this: All APs the same BSSID + Authentication (WPA2), on the 5ghz band all APs the same channel and on the 2.4ghz band since I have 3 access points channels 1 6 and 11.
 
-Not 100% necessary but I have noticed this works quite a bit better with Qualcomm based adapters. Mediatek adapters don't quite bridge the wireless interface correctly and broadcast packets are lost on inital connection. That was at least the case for me. I am running ath9k / ath10k adapters on all floors after replacing the MediaTek based RE650 on my middle floor.
+~~Not 100% necessary but I have noticed this works quite a bit better with Qualcomm based adapters. Mediatek adapters don't quite bridge the wireless interface correctly and broadcast packets are lost on inital connection. That was at least the case for me. I am running ath9k / ath10k adapters on all floors after replacing the MediaTek based RE650 on my middle floor.~~ As of start of sometime around the start of April 2020, MT7621 based access points were upgraded to kernel 5.4 @ OpenWRT master. The bridging issue has been fixed with this change. I am using my RE650 (mt7621) again without any issues.
 
 Not 100% necessary but change your beacon interval to somthing a little bit higher. I use 50ms instead of the default 100ms. I am unsure if this helps or not, but the logic is that since the beacon scans are fairly quick, we should have a higher chance of picking up a beacon when more of them are sent out.
 
