@@ -16,7 +16,7 @@ $data['rssi-2-to-other']=70; // scan $beaconcheck[2] as this rssi
 $data['rssi-2-to-other-min']=65; // if candidate has this rssi, roam
 
 $roamers=array();
-$roamers['cc:cc:cc:cc:cc:cc']=array(); // mac address of your client
+$roamers['cc:cc:cc:cc:cc:cc']=array('failedbeacons'=>0); // mac address of your client
 
 $neigh=array();
 $neigh['dd:dd:dd:dd:dd:dd']='....'; // mac + neighbor report for everyone of your access points (2+5ghz, all of them. i repeat, all of them!)
@@ -26,7 +26,5 @@ $beaconcheck[2][]='ee:ee:ee:ee:ee:ee'; // list of possible roam to candidates fo
 $beaconcheck[2][]='ff:ff:ff:ff:ff:ff';
 $beaconcheck[5][]='ee:ee:ee:ee:ee:ee'; // list of possible roam to candidates for rssi-5-to-other + rssi-5-to-other-min (can be 2 or 5ghz, must be in $neigh)
 $beaconcheck[5][]='ff:ff:ff:ff:ff:ff';
-
-$beaconcache=array();
 
 ?>
