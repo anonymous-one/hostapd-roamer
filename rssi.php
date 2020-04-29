@@ -42,7 +42,7 @@ function getDeviceRSSI($mac){ // fetch station details using iw, check all adapt
                 return $final;
         }
 }
-function fetchRssi($params,$timeout=5){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
+function fetchRssi($params,$timeout=1){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
         global $data;
         $target=neighborFromMac($params['targetmac'],false);
         $parts=array();
@@ -69,8 +69,8 @@ function fetchRssi($params,$timeout=5){ // send out a beacon request, and wait f
         // send out the beacon request
         $command='hostapd_cli -i '.$params['staadapter'].' req_beacon '.$params['stamac'].' '.$packet.' 2>&1 > /dev/null';
         system($command);
-        $start=time();
-        while(time()-$start<=$timeout){ // wait for $timeout seconds for a response, give up otherwise
+        $start=microtime(true);
+        while(microtime(true)-$start<=$timeout){ // wait for $timeout seconds for a response, give up otherwise
                 clearstatcache();
                 if(is_file($beaconfile)){ // we have a response
                         $content=file_get_contents($beaconfile);
@@ -91,7 +91,7 @@ function fetchRssi($params,$timeout=5){ // send out a beacon request, and wait f
                 }
                 usleep(50000);
         }
-        // no response in 5 seconds
+        // no response in $timeout seconds
         return false;
 }
 function neighborFromMac($mac,$returnparsed=true){ // parse out various details from a neighbor report and return as array or hostapd_cli neighbor=___ string
@@ -198,16 +198,20 @@ while(true){
                 $result=fetchRssi($params,1);
                 if($result===NULL||$result===false){
                         // track and handle failed beacons
-                        if($result===NULL){
-                                $roamers[$mac]['failedbeacons']++;
-                                if($roamers[$mac]['failedbeacons']>=10){
-                                        // deauth this client as its not responding to beacon requests ( ack=0 )
-                                        $command='hostapd_cli -i '.$rssidata['apdevice'].' deauthenticate '.$mac;
-                                        logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Deauthenticating '.$mac.' via '.$command);
-                                        system($command);
-                                        $roamers[$mac]['failedbeacons']=0;
+                        $roamers[$mac]['failedbeacons']++;
+                        if($roamers[$mac]['failedbeacons']>=10){
+                                // make sure no activity took place durring beacon check
+                                $rxpackets=$rssidata['rxpackets'];
+                                $rssidata=getDeviceRSSI($mac);
+                                if(!isset($rssidata['rxpackets'])||$rssidata['rxpackets']!=$rxpackets){
                                         continue;
                                 }
+                                // deauth this client as its not responding to beacon requests ( ack=0 )
+                                $command='hostapd_cli -i '.$rssidata['apdevice'].' deauthenticate '.$mac;
+                                logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Deauthenticating '.$mac.' via '.$command);
+                                system($command);
+                                $roamers[$mac]['failedbeacons']=0;
+                                continue;
                         }
                         usleep(50000);
                         continue;
