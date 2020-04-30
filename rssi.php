@@ -207,9 +207,8 @@ while(true){
                                         continue;
                                 }
                                 // deauth this client as its not responding to beacon requests ( ack=0 )
-                                $command='hostapd_cli -i '.$rssidata['apdevice'].' deauthenticate '.$mac;
-                                logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Deauthenticating '.$mac.' via '.$command);
-                                system($command);
+                                $command='hostapd_cli -i '.$rssidata['apdevice'].' deauthenticate '.$mac.' 2>&1';
+                                logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Deauthenticating '.$mac.' via '.$command.' ['.trim(shell_exec($command)).']');
                                 $roamers[$mac]['failedbeacons']=0;
                                 continue;
                         }
