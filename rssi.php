@@ -57,7 +57,7 @@ function fetchRssi($params,$timeout=2){ // send out a beacon request, and wait f
         $command='hostapd_cli -i '.$params['staadapter'].' req_beacon '.$params['stamac'].' '.$packet.' > /dev/null 2>&1 & inotifywait -t '.$timeout.' -q -q -e CLOSE_WRITE,CLOSE '.$beaconfile;
         system($command,$ret);
         if($ret<1){
-                $content=file_get_contents($beaconfile); // we have a response. a little dirty, but this saves a few calls according to strace.
+                $content=file_get_contents($beaconfile); // we have a response.
                 if($content=='FAILED'){
                         return NULL;
                 }
@@ -176,12 +176,14 @@ while(true){
                         continue;
                 }
                 // fetch own rssi so its nice and fresh
+                $start=microtime(true);
                 $params=array();
                 $params['stamac']=$mac;
                 $params['staadapter']=$rssidata['apdevice'];
                 $params['targetmac']=$rssidata['apmac'];
                 $params['targetnr']=$neigh[$rssidata['apmac']];
-                $result=fetchRssi($params,1);
+                $result=fetchRssi($params,2);
+                $rssidata['fastact']=(microtime(true)-$start<=0.5?true:false);
                 if($result===NULL||$result===false){
                         // track and handle failed beacons
                         $roamers[$mac]['failedbeacons']++;
@@ -210,7 +212,7 @@ while(true){
                                 $params['staadapter']=$data['adapters'][5][0];
                                 $params['targetmac']=$target;
                                 $params['targetnr']=$neigh[$target];
-                                $result=fetchRssi($params);
+                                $result=fetchRssi($params,($rssidata['fastact']?1:2));
                                 if($result!==NULL&&$result!==false&&$result<=$data['rssi-5-to-other-min']){
                                         $command='hostapd_cli -i '.$data['adapters'][5][0].' bss_tm_req '.$mac.' neighbor='.neighborFromMac($target).' pref=1 abridged=1 2>&1';
                                         logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Candidate '.$target.' has rssi of '.$result.', forced roam via '.$command.' ['.trim(shell_exec($command)).']');
@@ -228,7 +230,7 @@ while(true){
                         $params['staadapter']=$data['adapters'][2][0];
                         $params['targetmac']=$data['adapters'][5][1];
                         $params['targetnr']=$neigh[$data['adapters'][5][1]];
-                        $result=fetchRssi($params);
+                        $result=fetchRssi($params,($rssidata['fastact']?1:2));
                         if($result!==NULL&&$result!==false&&$result<=$data['rssi-2-to-5-min']){
                                 $command='hostapd_cli -i '.$data['adapters'][2][0].' bss_tm_req '.$mac.' neighbor='.neighborFromMac($data['adapters'][5][1]).' pref=1 abridged=1 2>&1';
                                 logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] 5ghz band has rssi of '.$result.', forced roam via '.$command.' ['.trim(shell_exec($command)).']');
@@ -255,7 +257,7 @@ while(true){
                                 $params['staadapter']=$data['adapters'][2][0];
                                 $params['targetmac']=$target;
                                 $params['targetnr']=$neigh[$target];
-                                $result=fetchRssi($params);
+                                $result=fetchRssi($params,($rssidata['fastact']?1:2));
                                 if($result!==NULL&&$result!==false&&$result<=$data['rssi-2-to-other-min']){
                                         $command='hostapd_cli -i '.$data['adapters'][2][0].' bss_tm_req '.$mac.' neighbor='.neighborFromMac($target).' pref=1 abridged=1 2>&1';
                                         logToConsole('['.$mac.' @ '.$rssidata['freq'].':'.$rssidata['rssi'].'] Candidate '.$target.' has rssi of '.$result.', forced roam via '.$command.' ['.trim(shell_exec($command)).']');
