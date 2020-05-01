@@ -13,26 +13,18 @@ function ascii2hex($ascii){ // convert ascii to hex
 }
 function getDeviceRSSI($mac){ // fetch station details using iw, check all adapters, and use the freshest one
         global $data;
-        $final=array('freq'=>false,'inactivetime'=>false);
-        foreach($data['adapters'] as $freq=>$device){
-                $command='iw dev '.$device[0].' station get '.$mac.' 2>&1';
-                $output=array();
-                exec($command,$output);
-                if(!is_array($output)||!count($output)){
-                        continue;
-                }
-                $output=implode($output);
-                if(preg_match('/^Station\s'.preg_quote($mac).'.*inactive\stime\:[\s\t]+([0-9]+)\sms.*rx\spackets\:[\s\t]+([0-9]+)[\s\t]+.*signal\:[\s\t]+\-([0-9]+)[\s\t]+.*connected\stime\:[\s\t]+([0-9]+)[\s\t]+/isU',$output,$matches)){
-                        if($final['inactivetime']===false||$final['inactivetime']>$matches[1]){
-                                $final['freq']=$freq;
-                                $final['rssi']=$matches[3];
-                                $final['inactivetime']=$matches[1];
-                                $final['connectedtime']=$matches[4];
-                                $final['rxpackets']=$matches[2];
-                                $final['apmac']=$device[1];
-                                $final['apdevice']=$device[0];
-                        }
-                }
+        $final=array('freq'=>false);
+        $command=str_replace('{MAC}',$mac,$data['iwdumpcmd']);
+        $output=shell_exec($command);
+        if(preg_match('/Station\s'.preg_quote($mac).'\s\(on\s([^\)]+)\).*inactive\stime\:[\s\t]+([0-9]+)\sms.*rx\spackets\:[\s\t]+([0-9]+)[\s\t]+.*signal\:[\s\t]+\-([0-9]+)[\s\t]+.*connected\stime\:[\s\t]+([0-9]+)[\s\t]+/isU',$output,$matches)){
+                $freqmap=array_combine(array_column($data['adapters'],0),array_keys($data['adapters']));
+                $final['freq']=$freqmap[$matches[1]];
+                $final['rssi']=$matches[4];
+                $final['inactivetime']=$matches[2];
+                $final['connectedtime']=$matches[5];
+                $final['rxpackets']=$matches[3];
+                $final['apmac']=$data['adapters'][$freqmap[$matches[1]]][1];
+                $final['apdevice']=$matches[1];
         }
         // if freq is false, we can assume the client is not connected
         if($final['freq']===false){
@@ -42,7 +34,7 @@ function getDeviceRSSI($mac){ // fetch station details using iw, check all adapt
                 return $final;
         }
 }
-function fetchRssi($params,$timeout=1){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
+function fetchRssi($params,$timeout=2){ // send out a beacon request, and wait for hostapd_cli to store it in the temp file
         global $data;
         $target=neighborFromMac($params['targetmac'],false);
         $parts=array();
@@ -61,35 +53,25 @@ function fetchRssi($params,$timeout=1){ // send out a beacon request, and wait f
         $packet=implode($parts);
         // where we are expecting the beacon response to be saved to via the hostapd_cli -a script
         $beaconfile='/tmp/beaconresp.'.$params['stamac'];
-        // if for some reason its already exists, remove it
-        clearstatcache();
-        if(is_file($beaconfile)){
-                unlink($beaconfile);
-        }
-        // send out the beacon request
-        $command='hostapd_cli -i '.$params['staadapter'].' req_beacon '.$params['stamac'].' '.$packet.' 2>&1 > /dev/null';
-        system($command);
-        $start=microtime(true);
-        while(microtime(true)-$start<=$timeout){ // wait for $timeout seconds for a response, give up otherwise
-                clearstatcache();
-                if(is_file($beaconfile)){ // we have a response
-                        $content=file_get_contents($beaconfile);
-                        if($content=='FAILED'){
-                                return NULL;
-                        }
-                        elseif(strlen($content)<64){ // 64 is just a random length, but these beacon responses are quite long, so 64 is enough
-                                return false;
-                        }
-                        // parse out the returned mac address
-                        $mac=substr($content,30,12);
-                        if($mac!=str_replace(':','',$params['targetmac'])){
-                                return NULL;
-                        }
-                        $rssi=unpack("l", pack("l", hexdec("FFFFFF".strtoupper(substr($content,26,2)))))[1]; // pull out the rssi from the beacon response
-                        // the rssi is returned in a -XXdBm format, convert to positive to make more readable
-                        return ($rssi*-1);
+        // send out the beacon request and wait for a response in the target file
+        $command='hostapd_cli -i '.$params['staadapter'].' req_beacon '.$params['stamac'].' '.$packet.' > /dev/null 2>&1 & inotifywait -t '.$timeout.' -q -q -e CLOSE_WRITE,CLOSE '.$beaconfile;
+        system($command,$ret);
+        if($ret<1){
+                $content=file_get_contents($beaconfile); // we have a response. a little dirty, but this saves a few calls according to strace.
+                if($content=='FAILED'){
+                        return NULL;
                 }
-                usleep(50000);
+                elseif(strlen($content)<64){ // 64 is just a random length, but these beacon responses are quite long, so 64 is enough
+                        return false;
+                }
+                // parse out the returned mac address
+                $mac=substr($content,30,12);
+                if($mac!=str_replace(':','',$params['targetmac'])){
+                        return NULL;
+                }
+                $rssi=unpack("l", pack("l", hexdec("FFFFFF".strtoupper(substr($content,26,2)))))[1]; // pull out the rssi from the beacon response
+                // the rssi is returned in a -XXdBm format, convert to positive to make more readable
+                return ($rssi*-1);
         }
         // no response in $timeout seconds
         return false;
@@ -118,6 +100,12 @@ function neighborFromMac($mac,$returnparsed=true){ // parse out various details 
 // include the config file
 include('rssi.config.php');
 
+// create beacon temp files
+foreach(array_keys($roamers) as $mac){
+        $filename='/tmp/beaconresp.'.$mac;
+        touch($filename);
+}
+
 // when the script is started, purge the neighbor report for each of the adapters
 foreach($data['adapters'] as $freq=>$device){
         if($data['servertype']=='openwrt'){
@@ -134,7 +122,7 @@ foreach($data['adapters'] as $freq=>$device){
                                 if($mac==$device[1]){
                                         continue;
                                 }
-                                system('hostapd_cli -i '.$device[0].' remove_neighbor '.$mac.' 2>&1 > /dev/null');
+                                system('hostapd_cli -i '.$device[0].' remove_neighbor '.$mac.' > /dev/null 2>&1');
                         }
                 }
         }
@@ -172,7 +160,7 @@ while(true){
                                         continue;
                                 }
                                 // add the neighbor report entry to the list
-                                $command='hostapd_cli -i '.$device[0].' set_neighbor '.$mac.' ssid='.strtolower(ascii2hex($data['bssid'])).' nr='.$nr.' >/dev/null 2>&1';
+                                $command='hostapd_cli -i '.$device[0].' set_neighbor '.$mac.' ssid='.strtolower(ascii2hex($data['bssid'])).' nr='.$nr.' > /dev/null 2>&1';
                                 system($command);
                         }
                 }
@@ -181,12 +169,10 @@ while(true){
         foreach($roamers as $mac=>$devicedata){
                 if(!$rssidata=getDeviceRSSI($mac)){ // fetch rssi via iw, if not connected, wait 50ms and try again
                         $roamers[$mac]['failedbeacons']=0;
-                        usleep(50000);
                         continue;
                 }
                 elseif($rssidata['connectedtime']<1){ // wait until client has been connected for at least 1 second
                         $roamers[$mac]['failedbeacons']=0;
-                        usleep(50000);
                         continue;
                 }
                 // fetch own rssi so its nice and fresh
@@ -212,7 +198,6 @@ while(true){
                                 $roamers[$mac]['failedbeacons']=0;
                                 continue;
                         }
-                        usleep(50000);
                         continue;
                 }
                 $roamers[$mac]['failedbeacons']=0;
