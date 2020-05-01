@@ -16,7 +16,7 @@ There are quite a few:
 
 OpenWRT 19 or higher. This script makes use of a few of the fairly recently added ubus calls which I believe were added somewhere between 18 or 19.
 
-Packages hostapd-utils coreutils-timeout php7-cli.
+Packages hostapd-utils coreutils-timeout php7-cli inotifywait.
 
 You need to have 802.11r, 802.11k and 802.11v configured and running in the /etc/config/wireless configuration file.
 
@@ -42,6 +42,8 @@ This is by far not a guide on how to setup 802.11r/k/v on OpenWRT, but there is 
 You will want to get hostapd-ct (www.candelatech.com version @ https://github.com/greearb/hostap-ct/tree/master/hostapd) installed. Although possibly not totally required, the main purpose of having this installed is to get the ```hostapd_cli show_neighbor``` command. It's quite possible this will eventually make its way into hostapd (non ct) as its quite useful, but as of March 2020 it has not. This command will dump the currently stored neighbor table, which is useful for getting your own neighbor report entry. There are other ways of getting your own neighbor report entry which I won't cover here. But for what its worth, you can use wpa_cli on the client end to fetch a list of neighbor entries from the currently connected to access point and get it that way. Last but not least the script uses the ```hostapd_cli show_neighbor``` command to check what entries are already in the neighbor table instead of overwriting them every 2 minutes. Overwriting them should be fine, so you can most likely skip hostapd-ct if you are able to get 'your own' neighbor report out of hostapd somehow.
 
 You will again need to have 802.11r/k/v running on hostapd. I won't get into how to set this up on a raw hostapd instance as there is plenty of info out there.
+
+Command inotifywait is now required as well.
 
 **C) Common (OpenWRT + Hostapd)**
 
