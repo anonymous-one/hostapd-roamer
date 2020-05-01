@@ -6,6 +6,7 @@ $data=array();
 $data['adapters']['2']=array('wlan0','aa:aa:aa:aa:aa:aa'); // your 2ghz adapter, remove if you do not have one
 $data['adapters']['5']=array('wlan1','bb:bb:bb:bb:bb:bb'); // your 5ghz adapter, remove if you do not have one
 $data['bssid']='My_SSID'; // your accesspoint ssid (all access points must have the same ssid)
+$data['iwdumpcmd']='iw dev wlan1 station get {MAC} || iw dev wlan0 station get {MAC}'; // the command to execute to get a iw dump of the client. recommended to list most commonly used adapter first, so the 2nd adapter is not checked if client exists on the first adapter.
 $data['lastneighupdate']=0;
 $data['servertype']='hostapd'; // hostapd or openwrt
 $data['rssi-2-to-5']=60; // try to roam to own 5ghz at this 2ghz rssi
